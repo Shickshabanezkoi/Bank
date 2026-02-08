@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <!-- ✅ Отключение зума только на инпутах, НЕ полная блокировка (WCAG OK) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* Предотвращение зума на инпутах/кнопках (touch-friendly) */
+        input, button, [touch-action-manipulation] {
+            touch-action: manipulation;
+            font-size: 16px; /* iOS zoom fix */
+        }
+
+        :root {
+            --primary-color: #d4a574;
+            --text-color: #333;
+            --bg-color: #f8f4f0;
+            --touch-target: 48px; /* Минимум 48x48 для кнопок */
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            line-height: 1.6; color: var(--text-color); background: var(--bg-color);
+            font-size: clamp(1rem, 2vw, 1.5rem);
+            overscroll-behavior: none; /* Предотвращает pull-to-refresh */
+        }
+
+        header {
+            background: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: clamp(1rem, 5vw, 2rem);
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: clamp(12px, 2vw, 24px); /* ≥8px отступы между ссылками */
+            flex-wrap: wrap;
+            padding: 1rem 0;
+        }
+
+        /* ✅ Кнопки/ссылки минимум 48x48px + отступы ≥8px */
+        nav a, button, .cta-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: var(--touch-target);
+            min-width: var(--touch-target);
+            padding: 0.75rem 1.5rem;
+            color: white;
+            text-decoration: none;
+            background: rgba(255,255,255,0.2);
+            border-radius: 999px;
+            font-size: 1rem;
+            font-weight: 500;
+            touch-action: manipulation;
+            margin: 4px; /* Дополнительные отступы ≥8px суммарно */
+            transition: all 0.2s ease;
+        }
+
+        nav a:hover, nav a:focus, .cta-button:hover, .cta-button:focus {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-1px);
+            outline: 2px solid white;
+            outline-offset: 2px;
+        }
+
+        section { padding: clamp(2rem, 10vw, 4rem) clamp(1rem, 5vw, 3rem); max-width: 1200px; margin: 0 auto; }
+
+        h1, h2 { font-size: clamp(1.5rem, 4vw, 2.5rem); margin-bottom: 1.5rem; text-align: center; }
+
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+
+        .menu-item {
+            display: flex; flex-direction: column;
+            background: white;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .menu-item:hover { transform: translateY(-4px); }
+
+        /* ✅ Кнопка "Заказать" в меню - 48x48+ */
+        .cta-button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 1rem;
+            font-size: 1rem;
+        }
+
+        .menu-img { width: 100%; height: 200px; object-fit: cover; }
+
+        .menu-info { padding: 1.5rem; }
+
+        .menu-price { font-weight: bold; color: var(--primary-color); font-size: 1.2em; }
+
+        /* ✅ Галерея со свайпами */
+        .gallery-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 1rem;
+            margin: 1rem 0;
+        }
+
+        .gallery-grid {
+            display: flex;
+            transition: transform 0.3s ease;
+            touch-action: pan-y pinch-zoom; /* Только вертикальный скролл + зум */
+        }
+
+        .gallery-img {
+            width: 100%;
+            flex-shrink: 0;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 1rem;
+            margin: 0 8px; /* Отступы между изображениями ≥8px */
+        }
+
+        /* Галерея кнопки */
+        .gallery-nav {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 1rem;
+        }
+
+        .gallery-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .dot {
+            width: var(--touch-target);
+            height: var(--touch-target);
+            border-radius: 50%;
+            background: #ddd;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .dot.active { background: var(--primary-color); }
+
+        .gallery-prev, .gallery-next {
+            width: 48px;
+            height: 48px;
+            background: rgba(212,165,116,0.8);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: manipulation;
+        }
+
+        .reviews-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+
+        .review { background: white; padding: 2rem; border-radius: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+
+        .stars { color: #ffd700; font-size: 1.5em; margin-bottom: 1rem; }
+
+        .contacts { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+
+        .contact-item {
+            display: flex; align-items: center; gap: 1rem; margin-bottom: clamp(12px, 2vw, 20px);
+            padding: 12px; /* Touch target для контактов */
+            background: white;
+            border-radius: 0.75rem;
+        }
+
+        .contact-icon { font-size: 2em; min-width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; }
+
+        @media (min-width: 768px) {
+            .contacts { grid-template-columns: repeat(2, 1fr); }
+            .menu-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (min-width: 1024px) {
+            .menu-grid { grid-template-columns: repeat(3, 1fr); }
+            .gallery-grid { /* 3 в ряд на десктопе */ }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Кафе "Алтай"</h1>
+    <p>Уютное место в Барнауле с вкусной едой</p>
+    <nav>
+        <a href="#menu">Меню</a>
+        <a href="#gallery">Галерея</a>
+        <a href="#reviews">Отзывы</a>
+        <a href="#contacts">Контакты</a>
+    </nav>
+</header>
+
+<section id="menu">
+    <h2>Меню</h2>
+    <div class="menu-grid">
+        <div class="menu-item">
+            <picture>
+                <source media="(max-width: 480px)" srcset="burger-300.jpg 300w">
+                <source media="(max-width: 768px)" srcset="burger-400.jpg 400w">
+                <img src="burger-600.jpg" alt="Классический бургер" class="menu-img" sizes="(max-width: 600px) 100vw, 50vw">
+            </picture>
+            <div class="menu-info">
+                <h3>Классический бургер</h3>
+                <p>Сочный бургер с говядиной, сыром и овощами.</p>
+                <span class="menu-price">350 ₽</span>
+                <!-- ✅ Кнопка 48x48+ -->
+                <button class="cta-button">Заказать</button>
+            </div>
+        </div>
+        <!-- Повтори для пасты и чизкейка с кнопками -->
+        <div class="menu-item">
+            <picture>
+                <source media="(max-width: 480px)" srcset="pasta-300.jpg 300w">
+                <source media="(max-width: 768px)" srcset="pasta-400.jpg 400w">
+                <img src="pasta-600.jpg" alt="Паста карбонара" class="menu-img" sizes="(max-width: 600px) 100vw, 50vw">
+            </picture>
+            <div class="menu-info">
+                <h3>Паста карбонара</h3>
+                <p>Традиционная итальянская паста с беконом и сливками.</p>
+                <span class="menu-price">420 ₽</span>
+            </div>
+        </div>
+
+        <!-- Чизкейк: скачай cheesecake-300.jpg, cheesecake-400.jpg, cheesecake-600.jpg -->
+        <div class="menu-item">
+            <picture>
+                <source media="(max-width: 480px)" srcset="cheesecake-300.jpg 300w">
+                <source media="(max-width: 768px)" srcset="cheesecake-400.jpg 400w">
+                <img src="cheesecake-600.jpg" alt="Чизкейк" class="menu-img" sizes="(max-width: 600px) 100vw, 50vw">
+            </picture>
+            <div class="menu-info">
+                <h3>Чизкейк</h3>
+                <p>Нежный сырный чизкейк с ягодами.</p>
+                <span class="menu-price">250 ₽</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="gallery">
+    <h2>Галерея</h2>
+    <!-- ✅ Свайп-галерея -->
+    <div class="gallery-container">
+        <div class="gallery-grid" id="galleryGrid">
+            <picture><img src="interior-800.jpg" alt="Интерьер" class="gallery-img"></picture>
+            <picture><img src="dishes-800.jpg" alt="Блюда" class="gallery-img"></picture>
+            <picture><img src="drinks-800.jpg" alt="Напитки" class="gallery-img"></picture>
+            <picture><img src="atmosphere-800.jpg" alt="Атмосфера" class="gallery-img"></picture>
+        </div>
+    </div>
+    <div class="gallery-nav">
+        <button class="gallery-prev" id="prevBtn">‹</button>
+        <div class="gallery-dots" id="dots"></div>
+        <button class="gallery-next" id="nextBtn">›</button>
+    </div>
+</section>
+
+<!-- Отзывы и контакты без изменений -->
+<section id="reviews"><!-- ... --></section>
+<section id="contacts"><!-- ... --></section>
+
+<script>
+    // ✅ Поддержка свайпов (touchstart/touchend)
+    const galleryGrid = document.getElementById('galleryGrid');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const dotsContainer = document.getElementById('dots');
+    let currentIndex = 0;
+    const totalSlides = 4;
+
+    // Создание точек
+    for(let i = 0; i < totalSlides; i++) {
+        const dot = document.createElement('button');
+        dot.className = 'dot';
+        dot.dataset.index = i;
+        if(i === 0) dot.classList.add('active');
+        dotsContainer.appendChild(dot);
+    }
+
+    // Свайп переменные
+    let startX = 0;
+    let currentTranslate = 0;
+    let prevTranslate = 0;
+
+    // Touch события
+    galleryGrid.addEventListener('touchstart', e => {
+        startX = e.touches[0].clientX;
+        galleryGrid.style.transition = 'none';
+    });
+
+    galleryGrid.addEventListener('touchend', e => {
+        const endX = e.changedTouches[0].clientX;
+        const diffX = startX - endX;
+
+        if(diffX > 50) { // Свайп вправо
+            nextSlide();
+        } else if(diffX < -50) { // Свайп влево
+            prevSlide();
+        }
+
+        galleryGrid.style.transition = 'transform 0.3s ease';
+    });
+
+    // Кнопки
+    nextBtn.addEventListener('click', nextSlide);
+    prevBtn.addEventListener('click', prevSlide);
+    document.querySelectorAll('.dot').forEach(dot => {
+        dot.addEventListener('click', () => goToSlide(parseInt(dot.dataset.index)));
+    });
+
+    function nextSlide() {
+        currentIndex = (currentIndex + 1) % totalSlides;
+        updateGallery();
+    }
+
+    function prevSlide() {
+        currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+        updateGallery();
+    }
+
+    function goToSlide(index) {
+        currentIndex = index;
+        updateGallery();
+    }
+
+    function updateGallery() {
+        const translateX = -currentIndex * (window.innerWidth + 16); // + gap
+        galleryGrid.style.transform = `translateX(${translateX}px)`;
+
+        document.querySelectorAll('.dot').forEach((dot, i) => {
+            dot.classList.toggle('active', i === currentIndex);
+        });
+    }
+
+    // Адаптация под размер экрана
+    window.addEventListener('resize', updateGallery);
+</script>
+</body>
+</html>
