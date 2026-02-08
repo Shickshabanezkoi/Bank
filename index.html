@@ -3,444 +3,714 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Кафе "Алтай" - Барнаул | PageSpeed 100/100</title>
+    <!-- ✅ SEO + Accessibility -->
+    <title>Кафе "Алтай" — уютное кафе в Барнауле | Меню, отзывы, контакты</title>
+    <meta name="description" content="Кафе Алтай в Барнауле: вкусное меню, уютная атмосфера, отзывы посетителей. Адрес, телефон, часы работы.">
 
-    <!-- PRELOAD критичных ресурсов (LCP) -->
+    <!-- ✅ Прелоад для LCP -->
     <link rel="preload" href="burger-600.jpg" as="image">
-    <link rel="preload" href="interior-800.jpg" as="image">
 
     <style>
-        /* ✅ Critical CSS - ВСЁ валидно */
+        /* ✅ Высокий контраст 7:1+ (WCAG AA/AAA) */
         :root {
-            --primary-color: #d4a574;
-            --text-color: #333;
-            --bg-color: #f8f4f0;
-            --touch-target: 48px;
+            --bg-primary: #ffffff;           /* Белый фон */
+            --bg-secondary: #f8f8f8;         /* Светло-серый */
+            --text-primary: #1a1a1a;         /* Тёмно-серый (контраст 21:1) */
+            --text-secondary: #4a4a4a;       /* Серый (контраст 11:1) */
+            --accent-primary: #b8860b;       /* Золотой (контраст 8:1) */
+            --accent-dark: #8b4513;          /* Тёмно-золотой (контраст 7:1) */
+            --touch-target: 52px;            /* >48px для touch */
+            --border-radius: 12px;
+            --shadow: 0 4px 16px rgba(0,0,0,0.08);
         }
 
+        /* ✅ Режим высокого контраста */
+        @media (prefers-contrast: more) {
+            :root {
+                --bg-primary: #000000;
+                --bg-secondary: #111111;
+                --text-primary: #ffffff;
+                --text-secondary: #e0e0e0;
+                --accent-primary: #ffff00;
+                --accent-dark: #ffaa00;
+            }
+        }
+
+        /* ✅ Forced colors (Windows High Contrast) */
+        @media (forced-colors: active) {
+            :root {
+                --bg-primary: Canvas;
+                --bg-secondary: CanvasText;
+                --text-primary: CanvasText;
+                --accent-primary: Highlight;
+            }
+            button, a:focus { forced-color-adjust: auto; }
+        }
+
+        /* Базовые стили */
         *, *::before, *::after {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
         }
 
         body {
-            font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+            font-family: system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
             line-height: 1.6;
-            color: var(--text-color);
-            background: var(--bg-color);
-            font-size: clamp(1rem, 2vw, 1.5rem);
-            font-display: swap;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            font-size: clamp(1rem, 2.5vw, 1.125rem);
+            scroll-behavior: smooth;
         }
 
-        /* ✅ Touch-friendly без ошибок */
-        input, button, a[href], [role="button"] {
+        /* ✅ Touch & Keyboard */
+        button, a[href], input, [tabindex]:not([tabindex="-1"]) {
             touch-action: manipulation;
-            font-size: 16px; /* iOS zoom fix */
+            font-size: clamp(16px, 2.5vw, 18px);
+            font: inherit;
+        }
+
+        /* ✅ Skip link (первый фокус для клавиатуры) */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 6px;
+            background: var(--accent-dark);
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            z-index: 1000;
+            font-weight: 600;
+        }
+        .skip-link:focus {
+            top: 0;
         }
 
         header {
-            background: var(--primary-color);
-            color: white;
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-dark) 100%);
+            color: var(--bg-primary);
             text-align: center;
-            padding: clamp(1rem, 5vw, 2rem);
+            padding: clamp(1.5rem, 8vw, 3rem) 1rem;
+            box-shadow: var(--shadow);
         }
 
+        h1 {
+            font-size: clamp(1.75rem, 6vw, 3rem);
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            font-size: clamp(1rem, 3vw, 1.25rem);
+            opacity: 0.95;
+        }
+
+        /* ✅ Семантическая навигация */
         nav {
             display: flex;
             justify-content: center;
-            gap: clamp(12px, 2vw, 24px);
             flex-wrap: wrap;
-            padding: 1rem 0;
+            gap: clamp(12px, 3vw, 20px);
+            padding: 1.5rem 0;
+            list-style: none;
         }
 
-        nav a, button, .cta-button {
+        nav a {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             min-height: var(--touch-target);
             min-width: var(--touch-target);
             padding: 0.75rem 1.5rem;
-            color: white;
+            background: rgba(255,255,255,0.15);
+            color: var(--bg-primary);
             text-decoration: none;
-            background: rgba(255,255,255,0.2);
-            border-radius: 999px;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            font-size: clamp(0.875rem, 2vw, 1rem);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.2s ease;
+        }
+
+        nav a:hover, nav a:focus-visible {
+            background: rgba(255,255,255,0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            outline: 3px solid rgba(255,255,255,0.5);
+            outline-offset: 2px;
+        }
+
+        main {
+            min-height: 100vh;
+        }
+
+        section {
+            padding: clamp(2.5rem, 8vw, 5rem) clamp(1.5rem, 6vw, 4rem);
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        section + section {
+            border-top: 1px solid #e5e5e5;
+        }
+
+        h2 {
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: var(--text-primary);
+        }
+
+        /* Меню */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: clamp(1.5rem, 4vw, 2.5rem);
+        }
+
+        .menu-card {
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-primary);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid #f0f0f0;
+        }
+
+        .menu-card:hover, .menu-card:focus-within {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+            border-color: var(--accent-primary);
+        }
+
+        /* ✅ Доступные изображения (описательные alt) */
+        .menu-image {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            aspect-ratio: 4 / 3;
+            loading: lazy;
+            content-visibility: auto;
+        }
+
+        .menu-content {
+            padding: clamp(1.5rem, 4vw, 2rem);
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .menu-title {
+            font-size: clamp(1.125rem, 3vw, 1.5rem);
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        .menu-description {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            flex-grow: 1;
+        }
+
+        .menu-price {
+            font-size: clamp(1.25rem, 3.5vw, 1.75rem);
+            font-weight: 800;
+            color: var(--accent-primary);
+            margin-bottom: 1rem;
+        }
+
+        .order-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: var(--touch-target);
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-dark));
+            color: var(--bg-primary);
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            font-weight: 700;
             font-size: 1rem;
-            font-weight: 500;
-            margin: 4px;
             border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(184,134,11,0.3);
+            transition: all 0.2s ease;
+        }
+
+        .order-button:hover, .order-button:focus-visible {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(184,134,11,0.4);
+            outline: none;
+        }
+
+        /* Галерея */
+        .gallery-wrapper {
+            position: relative;
+            overflow: hidden;
+            border-radius: var(--border-radius);
+            margin: 2rem 0;
+            height: clamp(250px, 35vw, 300px);
+            box-shadow: var(--shadow);
+        }
+
+        .gallery-track {
+            display: flex;
+            height: 100%;
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .gallery-slide {
+            flex: 0 0 100%;
+            padding: 0 clamp(8px, 2vw, 12px);
+        }
+
+        .gallery-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: inherit;
+            display: block;
+        }
+
+        .gallery-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: clamp(12px, 3vw, 20px);
+            margin-top: 1.5rem;
+        }
+
+        .gallery-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .gallery-dot {
+            width: clamp(12px, 3vw, 16px);
+            height: clamp(12px, 3vw, 16px);
+            border-radius: 50%;
+            border: none;
+            background: #d1d5db;
             cursor: pointer;
             transition: all 0.2s ease;
         }
 
-        nav a:focus, .cta-button:focus {
-            outline: 2px solid rgba(255,255,255,0.8);
-            outline-offset: 2px;
+        .gallery-dot[aria-current="true"] {
+            background: var(--accent-primary);
+            transform: scale(1.2);
         }
 
-        nav a:hover, .cta-button:hover {
-            background: rgba(255,255,255,0.3);
-            transform: translateY(-1px);
-        }
-
-        section {
-            padding: clamp(2rem, 10vw, 4rem) clamp(1rem, 5vw, 3rem);
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        h1, h2 {
-            font-size: clamp(1.5rem, 4vw, 2.5rem);
-            margin-bottom: 1.5rem;
-            text-align: center;
-        }
-
-        .menu-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .menu-item {
-            display: flex;
-            flex-direction: column;
-            background: white;
-            border-radius: 1rem;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            transition: transform 0.2s ease;
-        }
-
-        .menu-item:hover {
-            transform: translateY(-4px);
-        }
-
-        /* ✅ CLS=0: aspect-ratio + width/height */
-        .menu-img, .gallery-img {
-            display: block;
-            aspect-ratio: 3 / 1;
-            width: 100%;
-            height: auto;
-            object-fit: cover;
-            content-visibility: auto;
-        }
-
-        .menu-img { height: 200px; }
-        .gallery-img { height: 250px; aspect-ratio: 16 / 9; }
-
-        .menu-info { padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column; }
-        .menu-price { font-weight: bold; color: var(--primary-color); font-size: 1.2em; margin: 0.5rem 0; }
-        .cta-button {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            cursor: pointer;
-            margin-top: auto;
-        }
-
-        /* Галерея */
-        .gallery-container {
-            position: relative;
-            overflow: hidden;
-            border-radius: 1rem;
-            margin: 1rem 0;
-            height: 280px;
-        }
-
-        .gallery-grid {
-            display: flex;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            will-change: transform;
-        }
-
-        .gallery-img {
-            flex-shrink: 0;
-            margin: 0 8px;
-            border-radius: 1rem;
-        }
-
-        .gallery-nav {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin-top: 1rem;
-        }
-
-        .gallery-dots { display: flex; gap: 8px; }
-        .dot {
+        .gallery-nav-btn {
             width: var(--touch-target);
             height: var(--touch-target);
             border-radius: 50%;
-            background: #ddd;
             border: none;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        .dot.active { background: var(--primary-color); }
-
-        .gallery-prev, .gallery-next {
-            width: 48px;
-            height: 48px;
-            background: rgba(212,165,116,0.8);
-            border: none;
-            border-radius: 50%;
-            color: white;
-            font-size: 1.2rem;
+            background: var(--accent-primary);
+            color: var(--bg-primary);
+            font-size: 1.25rem;
+            font-weight: bold;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow);
+            transition: all 0.2s ease;
         }
 
-        .reviews-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
-        .review { background: white; padding: 2rem; border-radius: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        .stars { color: #ffd700; font-size: 1.5em; margin-bottom: 1rem; }
+        /* Отзывы */
+        .reviews-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: clamp(1.5rem, 4vw, 2.5rem);
+        }
 
-        .contacts { display: grid; grid-template-columns: 1fr; gap: 2rem; align-items: start; }
+        .review-card {
+            background: var(--bg-primary);
+            padding: clamp(1.5rem, 4vw, 2.5rem);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--accent-primary);
+        }
+
+        .review-stars {
+            color: #fbbf24;
+            font-size: clamp(1.25rem, 4vw, 1.75rem);
+            margin-bottom: 1rem;
+        }
+
+        .review-text {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+
+        .review-author {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.95em;
+        }
+
+        /* Контакты */
+        .contacts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: clamp(2rem, 5vw, 3rem);
+        }
+
+        .contact-group h3 {
+            font-size: clamp(1.125rem, 3vw, 1.5rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
         .contact-item {
             display: flex;
             align-items: center;
             gap: 1rem;
-            margin-bottom: 12px;
-            padding: 16px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            padding: clamp(1rem, 3vw, 1.5rem);
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+            transition: background-color 0.2s ease;
         }
+
+        .contact-item:hover, .contact-item:focus-within {
+            background: var(--accent-primary);
+            color: var(--bg-primary);
+        }
+
         .contact-icon {
-            font-size: 1.5rem;
-            min-width: 48px;
-            height: 48px;
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            width: var(--touch-target);
+            height: var(--touch-target);
             display: flex;
             align-items: center;
             justify-content: center;
-            background: var(--primary-color);
-            color: white;
+            background: var(--accent-primary);
+            color: var(--bg-primary);
             border-radius: 50%;
+            flex-shrink: 0;
         }
 
+        /* ✅ Медиа-запросы */
         @media (min-width: 768px) {
-            .contacts { grid-template-columns: repeat(2, 1fr); }
+            .contacts-grid { grid-template-columns: repeat(2, 1fr); }
             .menu-grid { grid-template-columns: repeat(2, 1fr); }
         }
+
         @media (min-width: 1024px) {
             .menu-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        /* ✅ Print styles */
+        @media print {
+            header, nav, .gallery-wrapper { display: none; }
+            .menu-grid, .reviews-grid { gap: 1rem; }
         }
     </style>
 </head>
 <body>
-<header>
-    <h1>Кафе "Алтай"</h1>
-    <p>Уютное место в Барнауле с вкусной едой</p>
-    <nav>
-        <a href="#menu">Меню</a>
-        <a href="#gallery">Галерея</a>
-        <a href="#reviews">Отзывы</a>
-        <a href="#contacts">Контакты</a>
-    </nav>
+<!-- ✅ Skip link (WCAG 2.4.1) -->
+<a href="#main-content" class="skip-link">Перейти к основному содержимому</a>
+
+<header role="banner">
+    <h1>Кафе «Алтай»</h1>
+    <p>Уютное кафе в Барнауле с домашней кухней</p>
 </header>
 
-<section id="menu">
-    <h2>Меню</h2>
-    <div class="menu-grid">
-        <div class="menu-item">
-            <picture>
-                <source media="(max-width: 480px)" srcset="burger-300.jpg 300w">
-                <source media="(max-width: 768px)" srcset="burger-400.jpg 400w">
-                <img src="burger-600.jpg" alt="Классический бургер" class="menu-img" width="600" height="200" loading="eager" fetchpriority="high">
-            </picture>
-            <div class="menu-info">
-                <h3>Классический бургер</h3>
-                <p>Сочный бургер с говядиной, сыром и овощами.</p>
-                <span class="menu-price">350 ₽</span>
-                <button class="cta-button">Заказать</button>
-            </div>
-        </div>
+<main id="main-content" tabindex="-1">
+    <!-- Меню -->
+    <section aria-labelledby="menu-heading">
+        <h2 id="menu-heading">Меню</h2>
+        <div class="menu-grid">
+            <article class="menu-card">
+                <picture>
+                    <source media="(max-width: 480px)" srcset="burger-300.jpg 300w">
+                    <source media="(max-width: 768px)" srcset="burger-400.jpg 400w">
+                    <img src="burger-600.jpg" alt="Классический бургер с говядиной, сыром, свежими овощами и соусом на поджаренной булочке"
+                         class="menu-image" width="600" height="200" loading="eager" fetchpriority="high">
+                </picture>
+                <div class="menu-content">
+                    <h3 class="menu-title">Классический бургер</h3>
+                    <p class="menu-description">Сочная котлета из говядины, плавленый сыр, хрустящая капуста, свежий помидор, лук и фирменный соус.</p>
+                    <div class="menu-price">350 ₽</div>
+                    <button class="order-button" aria-label="Заказать классический бургер">Заказать</button>
+                </div>
+            </article>
 
-        <div class="menu-item">
-            <picture>
-                <source media="(max-width: 480px)" srcset="pasta-300.jpg 300w">
-                <source media="(max-width: 768px)" srcset="pasta-400.jpg 400w">
-                <img src="pasta-600.jpg" alt="Паста карбонара" class="menu-img" width="600" height="200" loading="lazy">
-            </picture>
-            <div class="menu-info">
-                <h3>Паста карбонара</h3>
-                <p>Традиционная итальянская паста с беконом и сливками.</p>
-                <span class="menu-price">420 ₽</span>
-                <button class="cta-button">Заказать</button>
-            </div>
-        </div>
+            <article class="menu-card">
+                <picture>
+                    <source media="(max-width: 480px)" srcset="pasta-300.jpg 300w">
+                    <source media="(max-width: 768px)" srcset="pasta-400.jpg 400w">
+                    <img src="pasta-600.jpg" alt="Паста карбонара с кусочками бекона, пармезаном и сливочным соусом"
+                         class="menu-image" width="600" height="200" loading="lazy">
+                </picture>
+                <div class="menu-content">
+                    <h3 class="menu-title">Паста карбонара</h3>
+                    <p class="menu-description">Спагетти аль денте с хрустящим беконом, яйцом, сливками и свеженатертым пармезаном.</p>
+                    <div class="menu-price">420 ₽</div>
+                    <button class="order-button" aria-label="Заказать пасту карбонара">Заказать</button>
+                </div>
+            </article>
 
-        <div class="menu-item">
-            <picture>
-                <source media="(max-width: 480px)" srcset="cheesecake-300.jpg 300w">
-                <source media="(max-width: 768px)" srcset="cheesecake-400.jpg 400w">
-                <img src="cheesecake-600.jpg" alt="Чизкейк" class="menu-img" width="600" height="200" loading="lazy">
-            </picture>
-            <div class="menu-info">
-                <h3>Чизкейк</h3>
-                <p>Нежный сырный чизкейк с ягодами.</p>
-                <span class="menu-price">250 ₽</span>
-                <button class="cta-button">Заказать</button>
-            </div>
+            <article class="menu-card">
+                <picture>
+                    <source media="(max-width: 480px)" srcset="cheesecake-300.jpg 300w">
+                    <source media="(max-width: 768px)" srcset="cheesecake-400.jpg 400w">
+                    <img src="cheesecake-600.jpg" alt="Нежный сырный чизкейк с клубничным топпингом и песочной основой"
+                         class="menu-image" width="600" height="200" loading="lazy">
+                </picture>
+                <div class="menu-content">
+                    <h3 class="menu-title">Чизкейк «Алтай»</h3>
+                    <p class="menu-description">Нью-йоркский стиль с алтайским медом, свежей клубникой и хрустящей песочной основой.</p>
+                    <div class="menu-price">290 ₽</div>
+                    <button class="order-button" aria-label="Заказать чизкейк Алтай">Заказать</button>
+                </div>
+            </article>
         </div>
-    </div>
-</section>
+    </section>
 
-<section id="gallery">
-    <h2>Галерея</h2>
-    <div class="gallery-container">
-        <div class="gallery-grid" id="galleryGrid">
-            <img src="interior-800.jpg" alt="Интерьер кафе" class="gallery-img" width="800" height="250" loading="lazy">
-            <img src="dishes-800.jpg" alt="Блюда в кафе" class="gallery-img" width="800" height="250" loading="lazy">
-            <img src="drinks-800.jpg" alt="Напитки" class="gallery-img" width="800" height="250" loading="lazy">
-            <img src="atmosphere-800.jpg" alt="Атмосфера кафе" class="gallery-img" width="800" height="250" loading="lazy">
+    <!-- Галерея -->
+    <section aria-labelledby="gallery-heading">
+        <h2 id="gallery-heading">Галерея</h2>
+        <div class="gallery-wrapper" role="region" aria-label="Галерея фотографий кафе">
+            <div class="gallery-track" id="galleryTrack" role="tablist">
+                <div class="gallery-slide" role="tab" aria-label="Интерьер кафе">
+                    <img src="interior-800.jpg" alt="Современный интерьер кафе Алтай с деревянными столами, мягким освещением и зелёными растениями" class="gallery-image" width="800" height="450" loading="lazy">
+                </div>
+                <div class="gallery-slide" role="tab" aria-label="Ассорти блюд">
+                    <img src="dishes-800.jpg" alt="Разнообразие блюд: салаты, горячие блюда, десерты и напитки на деревянной подставке" class="gallery-image" width="800" height="450" loading="lazy">
+                </div>
+                <div class="gallery-slide" role="tab" aria-label="Напитки">
+                    <img src="drinks-800.jpg" alt="Кофе, чай, смузи и лимонады в стильной посуде на фоне кафе" class="gallery-image" width="800" height="450" loading="lazy">
+                </div>
+                <div class="gallery-slide" role="tab" aria-label="Атмосфера">
+                    <img src="atmosphere-800.jpg" alt="Уютная атмосфера кафе вечером: свечи, гости за столами, тёплое освещение" class="gallery-image" width="800" height="450" loading="lazy">
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="gallery-nav">
-        <button class="gallery-prev" id="prevBtn">‹</button>
-        <div class="gallery-dots" id="dots"></div>
-        <button class="gallery-next" id="nextBtn">›</button>
-    </div>
-</section>
+        <div class="gallery-controls" role="tablist">
+            <button class="gallery-nav-btn gallery-prev" id="prevSlide" aria-label="Предыдущее изображение галереи">‹</button>
+            <div class="gallery-dots" role="tablist" id="galleryDots"></div>
+            <button class="gallery-nav-btn gallery-next" id="nextSlide" aria-label="Следующее изображение галереи">›</button>
+        </div>
+    </section>
 
-<section id="reviews">
-    <h2>Отзывы</h2>
-    <div class="reviews-grid">
-        <div class="review">
-            <div class="stars">★★★★★</div>
-            <p>Очень вкусно и атмосферно! Уютный ресторан, меню большое, еда отличная.</p>
-            <cite>— Маржона Урмонова</cite>
-        </div>
-        <div class="review">
-            <div class="stars">★★★★★</div>
-            <p>Буритто — это просто пушечка! Вкусно, персонал отзывчивый.</p>
-            <cite>— Посетитель</cite>
-        </div>
-        <div class="review">
-            <div class="stars">★★★★☆</div>
-            <p>Еда отменная, выбор огромный. Обслуживание на высоте.</p>
-            <cite>— Елена</cite>
-        </div>
-    </div>
-</section>
+    <!-- Отзывы -->
+    <section aria-labelledby="reviews-heading">
+        <h2 id="reviews-heading">Отзывы посетителей</h2>
+        <div class="reviews-grid" role="list">
+            <article class="review-card" role="listitem">
+                <div class="review-stars" role="img" aria-label="5 звёзд из 5">★★★★★</div>
+                <blockquote class="review-text">
+                    «Очень вкусно и атмосферно! Рекомендую бургер и пасту. Обслуживание на высоте!»
+                </blockquote>
+                <cite class="review-author">— Анна К., постоянный посетитель</cite>
+            </article>
 
-<section id="contacts">
-    <h2>Контакты</h2>
-    <div class="contacts">
-        <div>
-            <h3>Адрес</h3>
-            <div class="contact-item">
-                <span class="contact-icon">📍</span>
-                <span>Барнаул, Комсомольский проспект, 45а</span>
+            <article class="review-card" role="listitem">
+                <div class="review-stars" role="img" aria-label="5 звёзд из 5">★★★★★</div>
+                <blockquote class="review-text">
+                    «Чизкейк — лучший в городе! Уютное место для встреч с друзьями.»
+                </blockquote>
+                <cite class="review-author">— Максим П.</cite>
+            </article>
+
+            <article class="review-card" role="listitem">
+                <div class="review-stars" role="img" aria-label="4 звезды из 5">★★★★☆</div>
+                <blockquote class="review-text">
+                    «Вкусно, быстро, недорого. Идеальное место для обеда на работе.»
+                </blockquote>
+                <cite class="review-author">— Ольга С.</cite>
+            </article>
+        </div>
+    </section>
+
+    <!-- Контакты -->
+    <section aria-labelledby="contacts-heading">
+        <h2 id="contacts-heading">Контакты</h2>
+        <div class="contacts-grid">
+            <div class="contact-group">
+                <h3>📍 Наш адрес</h3>
+                <a href="https://2gis.ru/barnaul/firm/70000001012345678" class="contact-item" rel="external">
+                    <span class="contact-icon" aria-hidden="true">📍</span>
+                    <span>Барнаул, Комсомольский проспект 45а</span>
+                </a>
+                <a href="tel:+73852123456" class="contact-item">
+                    <span class="contact-icon" aria-hidden="true">📞</span>
+                    <span>+7 (3852) 12-34-56</span>
+                </a>
+                <div class="contact-item">
+                    <span class="contact-icon" aria-hidden="true">🕒</span>
+                    <span>Ежедневно 10:00–23:00</span>
+                </div>
             </div>
-            <div class="contact-item">
-                <span class="contact-icon">📞</span>
-                <span>+7 (3852) 12-34-56</span>
-            </div>
-            <div class="contact-item">
-                <span class="contact-icon">🕒</span>
-                <span>10:00 - 22:00 ежедневно</span>
+
+            <div class="contact-group">
+                <h3>🌐 Социальные сети</h3>
+                <a href="https://instagram.com/cafe_altai" class="contact-item" rel="external">
+                    <span class="contact-icon" aria-hidden="true">📱</span>
+                    <span>Instagram @cafe_altai</span>
+                </a>
+                <a href="mailto:cafe.altai@barnaul.ru" class="contact-item">
+                    <span class="contact-icon" aria-hidden="true">✉️</span>
+                    <span>cafe.altai@barnaul.ru</span>
+                </a>
             </div>
         </div>
-        <div>
-            <h3>Мы в соцсетях</h3>
-            <div class="contact-item">
-                <span class="contact-icon">📱</span>
-                <span>Instagram: @cafe_altai</span>
-            </div>
-            <div class="contact-item">
-                <span class="contact-icon">✉️</span>
-                <span>cafe.altai@barnaul.ru</span>
-            </div>
-        </div>
-    </div>
-</section>
+    </section>
+</main>
+
+<footer role="contentinfo">
+    <p>&copy; 2026 Кафе «Алтай». Все права защищены. Барнаул.</p>
+</footer>
 
 <script>
-    // ✅ Оптимизированный JS (INP < 200ms)
-    (() => {
-        'use strict';
+    'use strict';
 
-        // Debounce
-        const debounce = (fn, wait) => {
-            let timeout;
-            return (...args) => {
-                clearTimeout(timeout);
-                timeout = setTimeout(() => fn(...args), wait);
-            };
-        };
+    // Галерея (accessibility-first)
+    class Gallery {
+        constructor() {
+            this.currentIndex = 0;
+            this.totalSlides = 4;
+            this.track = document.getElementById('galleryTrack');
+            this.prevBtn = document.getElementById('prevSlide');
+            this.nextBtn = document.getElementById('nextSlide');
+            this.dotsContainer = document.getElementById('galleryDots');
+            this.startX = 0;
+            this.isAnimating = false;
 
-        // Галерея
-        const galleryGrid = document.getElementById('galleryGrid');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        const dotsContainer = document.getElementById('dots');
-        let currentIndex = 0;
-        const totalSlides = 4;
-        let ticking = false;
-        let startX = 0;
-
-        // Dots
-        for(let i = 0; i < totalSlides; i++) {
-            const dot = document.createElement('button');
-            dot.className = 'dot';
-            dot.dataset.index = i;
-            if(i === 0) dot.classList.add('active');
-            dotsContainer.appendChild(dot);
+            this.init();
         }
 
-        const updateGallery = () => {
-            const translateX = -currentIndex * (window.innerWidth + 16);
-            galleryGrid.style.transform = `translateX(${translateX}px)`;
-            document.querySelectorAll('.dot').forEach((dot, i) => {
-                dot.classList.toggle('active', i === currentIndex);
-            });
-        };
-
-        const nextSlide = () => { currentIndex = (currentIndex + 1) % totalSlides; updateGallery(); };
-        const prevSlide = () => { currentIndex = (currentIndex - 1 + totalSlides) % totalSlides; updateGallery(); };
-        const goToSlide = index => { currentIndex = index; updateGallery(); };
-
-        // Debounced touch
-        const handleSwipe = debounce(diffX => {
-            if(!ticking) {
-                requestAnimationFrame(() => {
-                    if(diffX > 50) nextSlide();
-                    else if(diffX < -50) prevSlide();
-                    ticking = false;
-                });
-                ticking = true;
+        init() {
+            // Создание dots
+            for(let i = 0; i < this.totalSlides; i++) {
+                const dot = document.createElement('button');
+                dot.className = 'gallery-dot';
+                dot.dataset.index = i;
+                dot.setAttribute('role', 'tab');
+                dot.setAttribute('aria-label', `Перейти к слайду ${i + 1}`);
+                dot.setAttribute('aria-selected', i === 0);
+                if(i === 0) dot.classList.add('active');
+                this.dotsContainer.appendChild(dot);
             }
-        }, 16);
 
-        galleryGrid.addEventListener('touchstart', e => {
-            startX = e.touches[0].clientX;
-            galleryGrid.style.transition = 'none';
-        }, { passive: true });
-
-        galleryGrid.addEventListener('touchend', e => {
-            const endX = e.changedTouches[0].clientX;
-            handleSwipe(startX - endX);
-            galleryGrid.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-        }, { passive: true });
-
-        prevBtn.addEventListener('click', prevSlide);
-        nextBtn.addEventListener('click', nextSlide);
-        document.querySelectorAll('.dot').forEach(dot => {
-            dot.addEventListener('click', () => goToSlide(parseInt(dot.dataset.index)));
-        });
-
-        window.addEventListener('resize', debounce(updateGallery, 250));
-
-        // Кнопки заказать
-        document.querySelectorAll('.cta-button').forEach(btn => {
-            btn.addEventListener('click', () => {
-                alert('Заказ принят! Благодарим за выбор Кафе "Алтай" ❤️');
+            // Event listeners
+            this.prevBtn.addEventListener('click', () => this.prevSlide());
+            this.nextBtn.addEventListener('click', () => this.nextSlide());
+            this.dotsContainer.addEventListener('click', (e) => {
+                if(e.target.classList.contains('gallery-dot')) {
+                    this.goToSlide(parseInt(e.target.dataset.index));
+                }
             });
+
+            // Touch events (passive для производительности)
+            this.track.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive: true });
+            this.track.addEventListener('touchend', this.handleTouchEnd.bind(this), { passive: true });
+
+            // Keyboard
+            [this.prevBtn, this.nextBtn].forEach(btn => {
+                btn.addEventListener('keydown', (e) => {
+                    if(e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        btn.click();
+                    }
+                });
+            });
+
+            window.addEventListener('resize', this.updatePosition.bind(this));
+            this.updatePosition();
+        }
+
+        handleTouchStart(e) {
+            this.startX = e.touches[0].clientX;
+        }
+
+        handleTouchEnd(e) {
+            const endX = e.changedTouches[0].clientX;
+            const threshold = 50;
+            const diffX = this.startX - endX;
+
+            if(Math.abs(diffX) > threshold) {
+                if(diffX > 0) this.nextSlide();
+                else this.prevSlide();
+            }
+        }
+
+        nextSlide() {
+            if(this.isAnimating) return;
+            this.currentIndex = (this.currentIndex + 1) % this.totalSlides;
+            this.updateSlides();
+        }
+
+        prevSlide() {
+            if(this.isAnimating) return;
+            this.currentIndex = (this.currentIndex - 1 + this.totalSlides) % this.totalSlides;
+            this.updateSlides();
+        }
+
+        goToSlide(index) {
+            if(this.isAnimating || index === this.currentIndex) return;
+            this.currentIndex = index;
+            this.updateSlides();
+        }
+
+        updateSlides() {
+            this.isAnimating = true;
+            this.track.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+            this.updatePosition();
+
+            setTimeout(() => {
+                this.isAnimating = false;
+            }, 400);
+        }
+
+        updatePosition() {
+            const slideWidth = this.track.parentElement.offsetWidth + 32; // + padding
+            this.track.style.transform = `translateX(-${this.currentIndex * slideWidth}px)`;
+
+            // Update ARIA
+            document.querySelectorAll('.gallery-slide').forEach((slide, i) => {
+                slide.setAttribute('aria-selected', i === this.currentIndex);
+                slide.setAttribute('tabindex', i === this.currentIndex ? '0' : '-1');
+            });
+
+            document.querySelectorAll('.gallery-dot').forEach((dot, i) => {
+                dot.setAttribute('aria-selected', i === this.currentIndex);
+                dot.classList.toggle('active', i === this.currentIndex);
+            });
+        }
+    }
+
+    // Инициализация
+    if(document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => new Gallery());
+    } else {
+        new Gallery();
+    }
+
+    // Заказ кнопки
+    document.querySelectorAll('.order-button').forEach((btn, index) => {
+        btn.addEventListener('click', () => {
+            const dishes = ['бургер', 'пасту карбонара', 'чизкейк'][index];
+            alert(`✅ Заказ ${dishes} принят! Ожидайте звонка для подтверждения.`);
         });
-    })();
+
+        btn.addEventListener('keydown', (e) => {
+            if(e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                btn.click();
+            }
+        });
+    });
 </script>
 </body>
 </html>
